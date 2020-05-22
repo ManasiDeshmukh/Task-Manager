@@ -1,7 +1,9 @@
 const express=require('express')
 const router=express.Router()
 const User =require('../models/user')
-
+const bcrypt=require('bcryptjs')
+const auth=require('../middleware/auth')
+//===================sign in=============================
 router.post('/users',async(req,res)=>
 {
     const user=new User(req.body)
@@ -16,53 +18,67 @@ res.send(e)
     }) */
 try{
     await user.save()
-    res.status(200).send(user)
+    const token=await user.generateAuthToken()
+    res.send({user,tokens})
 }
 catch(e){
     res.status(500).send(e) 
     console.log(e)
 } 
 })
-
+//==========================login=======================================
 router.post('/users/login',async(req,res)=>
 {
-    console.log(req.body)
+   console.log(req.body)
     try{
-const user= await User.findByCredentials(req.body.Email,req.body.password)
- res.send(user) 
-console.log(user)
+const user=await User.findByCredentials(req.body.Email,req.body.password)
+const token=await user.generateAuthToken()
+res.send({user,token}) 
+
+
   }
-    catch(e)
+    catch(error)
     {
-        console.log(e)
-res.status(404).send(e)
+        console.log(error)
+res.status(400).send(error)
     }
 })
 
-
-
-
-
-
-
-
-router.get('/users',async(req,res)=>
-{/* 
-    User.find({}).then((users)=>
-    {
-        res.status(400).send(users)
-    }).catch((e)=>
-    {
-        res.status(500).send(e)
-    }) */
+//logout
+router.post('/users/logout',auth,async(req,res)=>
+{
     try{
-   const users= await  User.find({})
-        res.status(400).send(users)
+req.user.tokens=req.user.tokens.filter((token)=>
+{
+    return token.token!=req.token
+})
+await req.user.save()
+res.send()
     }
     catch(e)
     {
-        res.status(500).send(e)
+    res.status(500).send(e)
+    
     }
+})
+
+//logout from all devicec
+router.post('/users/logoutall',auth,async(req,res)=>
+{
+try{
+req.user.tokens=[]
+await req.user.save()
+res.send()
+}
+catch(e)
+{
+    res.status(500).send(e)
+}
+
+})
+//to fetch our profile
+router.get('/users/me',auth,async(req,res)=>
+{res.send(req.user)
 })
 router.get('/users/:id',async(req,res)=>
 {
@@ -89,34 +105,27 @@ res.status(500).send()
  
 
 })
-router.patch('/users/:id',async(req,res)=>
+router.patch('/users/me',auth,async(req,res)=>
 { 
-    console.log(req.body)
+
     const updates=Object.keys(req.body)//keys in body in postman
 const allowed=['name','age','password','Email']
 const isvalidoperation=updates.every((update)=>
 {
- allowed.includes(update)
+ return allowed.includes(update)
 })
 if(!isvalidoperation)
 {
     return res.status(404).send('invalid updates')
 } 
 try{//dynamic way
-    const user=await User.findById(req.params.id)
-    updates.forEach((update )=> {
-      user[update]=req.body[update]
-     
-    
-     //   const user=await User.findByIdAndUpdate(req.params.id,req.body,{new:true,runvalidators:true})
-
-    })
-    await user.save()    
-   // console.log(req.params.id)
-      if(!user)
-   return res.status(404).send()
-   res.send(user)
-console.log(user)
+       updates.forEach((update )=> {
+      req.user[update]=req.body[update]
+      //   const user=await User.findByIdAndUpdate(req.params.id,req.body,{new:true,runvalidators:true})
+  })
+    await req.user.save()    
+   
+   res.send(req.user)
 }
    catch(e)
    {
@@ -124,13 +133,27 @@ console.log(user)
    }
    
 })
-router.delete('/users/:id',async(req,res)=>
-{
+/* router.delete('/users/:id',async(req,res)=>
+{ ==========================if admin want to delete=================================
     try{
 const data= await User.findByIdAndDelete(req.params.id) 
 if(!data)
 return res.status(404).send()
 res.status(200).send(data)
+
+}
+    catch(e)
+    {
+        res.status(500).send()   
+    }
+}) */
+//===================if user want to delete his own profile
+router.delete('/users/me',auth,async(req,res)=>
+{
+    try{
+await req.user.remove()
+
+res.send(req.user)
 
 }
     catch(e)
