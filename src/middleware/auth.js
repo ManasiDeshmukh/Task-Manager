@@ -5,9 +5,9 @@ const auth=async(req,res,next)=>
     try{//token set in header
 const token=req.header('Authorization').replace('Bearer ','')
 console.log(token)
-const decoded=jwt.verify(token,'This is my new course')
+const decoded=jwt.verify(token,process.env.SECRET-TOKEN)
 const user=await User.findOne({_id:decoded._id,'tokens.token':token})
-//find user with that id with having validaded id
+//find user with that id with having validaded tkoen
 
 if(!user)
 throw new Error()
