@@ -2,6 +2,8 @@ const mongoose=require('mongoose')
 const validator=require('validator')
 const bcrypt=require('bcryptjs')
 const jwt=require('jsonwebtoken')
+const task=require('./task')
+
 const userSchema=new mongoose.Schema(
     {name:{
         type:String,
@@ -46,6 +48,11 @@ throw new Error('age must br greater than 18')
             throw new Error('password cant contain password string') 
         }
     },
+    
+    avatar:
+    {
+        type:Buffer
+    },
     tokens:[
         {
             token:
@@ -55,6 +62,15 @@ throw new Error('age must br greater than 18')
             }
         }
     ]
+},
+{
+    timestamps:true
+})
+//=========not going to store in  databse only state the rel bet user and task
+userSchema.virtual('tasks',{
+    ref:'Task',
+    localField:'_id',
+    foreignField:'owner'
 })
 userSchema.methods.toJSON= function()
 {//toJSON this hiding od data apply to all routers
@@ -62,6 +78,7 @@ userSchema.methods.toJSON= function()
     const userobj=user.toObject()
     delete userobj.password
     delete userobj.tokens
+    delete userobj.avatar
     return userobj
 
 }
@@ -103,5 +120,11 @@ if (user.isModified('password')) {
 //if not provide next then it will hang over forever thinking that something is runnuing inside
 next()
 }) 
+
+userSchema.pre('remove',async function(next)
+{
+await task.deleteMany({owner:this._id})
+next()
+})
 const User=mongoose.model('User',userSchema)
 module.exports=User
