@@ -115,7 +115,7 @@ const user=this
 if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8)
 }
-
+//taskapp:rc6zChUnXR0augis>
 //next:next tells above code get done ready to save 
 //if not provide next then it will hang over forever thinking that something is runnuing inside
 next()
