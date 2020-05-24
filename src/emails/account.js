@@ -15,7 +15,7 @@ const sendWelcomeEmail=(Email,name)=>
         from:'deshmukhmanasi9@gmail.com',
         to:Email,
         subject:'nodejs',
-        text:`welcome to nodejs ,${name},helo`
+        text:`helloo ,welcome to nodejs ,${name},`
     }
 
     transporter.sendMail(mailOptions,function(err,info)
