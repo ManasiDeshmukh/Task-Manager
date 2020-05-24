@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",
+    "jest": "^26.0.1",
     "nodemon": "^2.0.4"
   }
 }
