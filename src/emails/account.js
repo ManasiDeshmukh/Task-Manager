@@ -15,7 +15,7 @@ const sendWelcomeEmail=(Email,name)=>
         from:'deshmukhmanasi9@gmail.com',
         to:Email,
         subject:'nodejs',
-        text:`helloo ,welcome to nodejs ,${name},`
+        text:`heloo ,welcome to nodejs ,${name},`
     }
 
     transporter.sendMail(mailOptions,function(err,info)
@@ -31,7 +31,7 @@ const sendWelcomeEmail=(Email,name)=>
         from:'deshmukhmanasi9@gmail.com',
         to:Email,
         subject:'deleting account',
-        text:`Heyyy ,${name},is their any reason behind deleting account`
+        text:`Heyyy ,${name},is their any reason behind deleting account .see u soon`
     }
 
     transporter.sendMail(mailOptions,function(err,info)
