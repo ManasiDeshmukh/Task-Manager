@@ -24,13 +24,13 @@ res.send(e)
     }) */
 try{
     await user.save()
-    sendWelcomeEmail(user.Email,user.name)
+   // sendWelcomeEmail(user.Email,user.name)
     const token=await user.generateAuthToken()
     res.send({user,token})
 }
 catch(e){
     res.status(500).send(e) 
-    console.log(e)
+   console.log(e)
 } 
 })
 //==========================login=======================================
@@ -41,8 +41,6 @@ router.post('/users/login',async(req,res)=>
 const user=await User.findByCredentials(req.body.Email,req.body.password)
 const token=await user.generateAuthToken()
 res.send({user,token}) 
-
-
   }
     catch(error)
     {
@@ -159,7 +157,7 @@ router.delete('/users/me',auth,async(req,res)=>
 {
     try{
 await req.user.remove()
-sendcancelEmail(req.user.Email,req.user.name)
+//sendcancelEmail(req.user.Email,req.user.name)
 res.send(req.user)
 
 }

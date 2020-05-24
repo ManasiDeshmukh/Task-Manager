@@ -35,7 +35,7 @@ console.log('server listen on port',port)
  
 const jwt=require('jsonwebtoken')
 
-
+/* 
 
 const myfunction=async ()=>
 {
@@ -51,4 +51,4 @@ const data=jwt.verify(token,'This is my new course')//return  payload if token i
 //
 
 }
-myfunction() 
+myfunction()  */
