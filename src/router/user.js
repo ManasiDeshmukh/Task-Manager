@@ -6,9 +6,9 @@ const sharp=require('sharp')
 const bcrypt=require('bcryptjs')
 const {sendWelcomeEmail}=require('../emails/account')
 const {sendcancelEmail}=require('../emails/account')
-
-//heroku config:set  MONGODBURL="mongodb+srv://taskapp:<rc6zChUnXR0augis>@cluster0-rjdun.mongodb.net/task-manager-app?retryWrites=true&w=majority"
 const auth=require('../middleware/auth')
+//heroku config:set  MONGODBURL="mongodb+srv://taskapp:<rc6zChUnXR0augis>@cluster0-rjdun.mongodb.net/task-manager-app?retryWrites=true&w=majority"
+
 //===================sign in=============================
 router.post('/users',async(req,res)=>
 {
@@ -194,6 +194,7 @@ router.post('/users/me/avatar',auth,upload.single('avatar'),async(req,res)=>
 },(error,req,res,next)=>
 {
 res.status(400).send({error:error.message})
+
 })
 //after deleting file or image should get delete
 

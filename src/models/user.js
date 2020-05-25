@@ -16,7 +16,7 @@ const userSchema=new mongoose.Schema(
         required:false,
         validate(value)
         {
-if(value<0)
+if(value<0)// //"test": "env-cmd -f ./config/test.env jest --watch"
 throw new Error('age should be positive')
 if(value<18)
 throw new Error('age must br greater than 18')
@@ -86,7 +86,7 @@ userSchema.methods.generateAuthToken=async function()
 {
 //methods are accesible on specific instance methods
 const user=this
-const token=jwt.sign({_id:user._id.toString()},'process.env.SECRET-TOKEN')
+const token=jwt.sign({_id:user._id.toString()},process.env.SECRETTOKEN)
 user.tokens=user.tokens.concat({token:token})
 await user.save()
 

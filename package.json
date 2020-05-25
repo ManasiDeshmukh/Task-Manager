@@ -9,8 +9,9 @@
     "test": "env-cmd -f ./config/test.env jest --watch"
   },
   "jest": {
-    "testEnvironment": "node"
-  },
+      "testEnvironment": "node"
+    },
+  
   "keywords": [],
   "author": "",
   "license": "ISC",
