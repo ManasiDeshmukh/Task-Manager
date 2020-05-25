@@ -86,7 +86,7 @@ userSchema.methods.generateAuthToken=async function()
 {
 //methods are accesible on specific instance methods
 const user=this
-const token=jwt.sign({_id:user._id.toString()},process.env.SECRET-TOKEN)
+const token=jwt.sign({_id:user._id.toString()},process.env.SECRETTOKEN)
 user.tokens=user.tokens.concat({token:token})
 await user.save()
 
